@@ -86,33 +86,29 @@ print(BostonHousing_model_lm)
 
 # Area under ROC Curve
 # Loading dataset
-library(readr)
-Loan_Default <- read_csv("data/Loan_Default.csv", 
-    col_types = cols(Employed = col_factor(levels = c("1", 
-       "0")), Default = col_factor(levels = c("1", 
-         "0"))))
-View(Loan_Default) 
+library(mlbench)
+data("GermanCredit")
 #Baseline Accuracy
-Loan_Default_freq <- Loan_Default$Default
+German_Credit_freq <- GermanCredit$Class
 cbind(frequency =
-        table(Loan_Default_freq),
-      percentage = prop.table(table(Loan_Default_freq)) * 100)
+        table(German_Credit_freq),
+      percentage = prop.table(table(German_Credit_freq)) * 100)
 #Split Dataset
-train_index <- createDataPartition(Loan_Default$Default,
+train_index <- createDataPartition(GermanCredit$Class,
                                    p = 0.8,
                                    list = FALSE)
-Loan_Default_train <- Loan_Default[train_index, ]
-Loan_Default_test <- Loan_Default[-train_index, ]
+German_Credit_train <- GermanCredit[train_index, ]
+German_Credit_test <- GermanCredit[-train_index, ]
 # Train model
 train_control <- trainControl(method = "cv", number = 10,
                               classProbs = TRUE,
                               summaryFunction = twoClassSummary)
 set.seed(10)
 
-Loan_Default_model <- train(Default ~ ., data = Loan_Default_train, method = "knn",
+German_Credit_model <- train(Class ~ ., data = German_Credit_train, method = "knn",
                          metric = "ROC", trControl = train_control)
 #Display Model's Performance
-print(Loan_Default_model)
+print(German_Credit_model)
 
 #Logarithmic Loss
 #Load dataset
